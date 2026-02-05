@@ -98,19 +98,86 @@
 
   <div class="panel">
     <button class="btn" id="reset">Выключить</button>
+    <button class="btn" data-mode="static">Статика</button>
     <input type="color" id="colorPicker" value="#ffffff" />
+    <button class="btn" data-mode="disco">Дискотека</button>
+    <button class="btn" data-mode="candle">Свеча</button>
+    <button class="btn" data-mode="ocean">Океан</button>
+    <button class="btn" data-mode="beacon">Мигалка</button>
   </div>
 
   <script>
     const picker = document.getElementById('colorPicker');
     const resetBtn = document.getElementById('reset');
+    const modeButtons = document.querySelectorAll('[data-mode]');
+
+    let interval = null;
+    let lastStaticColor = '#ffffff';
+
+    function clearMode() {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    }
 
     picker.addEventListener('input', (e) => {
-      document.body.style.backgroundColor = e.target.value;
+      clearMode();
+      lastStaticColor = e.target.value;
+      document.body.style.backgroundColor = lastStaticColor;
     });
 
     resetBtn.addEventListener('click', () => {
+      clearMode();
       document.body.style.backgroundColor = '#000000';
+    });
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        clearMode();
+        const mode = btn.dataset.mode;
+
+        if (mode === 'static') {
+          document.body.style.backgroundColor = lastStaticColor;
+        }
+
+        if (mode === 'disco') {
+          interval = setInterval(() => {
+            const hue = Math.floor(Math.random() * 360);
+            document.body.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+          }, 200);
+        }
+
+        if (mode === 'candle') {
+          interval = setInterval(() => {
+            const flicker = Math.random() * 10;
+            document.body.style.backgroundColor = `hsl(35, 100%, ${45 + flicker}%)`;
+          }, 120);
+        }
+
+        if (mode === 'ocean') {
+          let hue = 190;
+          let dir = 1;
+          interval = setInterval(() => {
+            hue += dir * 0.3;
+            if (hue > 210 || hue < 185) dir *= -1;
+            document.body.style.backgroundColor = `hsl(${hue}, 80%, 45%)`;
+          }, 60);
+        }
+
+        if (mode === 'beacon') {
+          let step = 0;
+          const sequence = [
+            '#ff0000', '#000000', '#ff0000', '#000000',
+            '#0000ff', '#000000', '#0000ff', '#000000'
+          ];
+
+          interval = setInterval(() => {
+            document.body.style.backgroundColor = sequence[step];
+            step = (step + 1) % sequence.length;
+          }, 150);
+        }
+      });
     });
   </script>
 
