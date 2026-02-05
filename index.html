@@ -96,7 +96,9 @@
 
   <div class="hint">Онлайн фонарик — выбери цвет</div>
 
-  <div class="panel">
+  <button class="btn" id="togglePanel" style="position:fixed;bottom:24px;right:24px;z-index:10;">Скрыть</button>
+
+  <div class="panel" id="panel">
     <button class="btn" id="reset">Выключить</button>
     <button class="btn" data-mode="static">Статика</button>
     <input type="color" id="colorPicker" value="#ffffff" />
@@ -113,6 +115,8 @@
   <script>
     const picker = document.getElementById('colorPicker');
     const resetBtn = document.getElementById('reset');
+    const panel = document.getElementById('panel');
+    const togglePanelBtn = document.getElementById('togglePanel');
     const modeButtons = document.querySelectorAll('[data-mode]');
 
     let interval = null;
@@ -129,6 +133,12 @@
       clearMode();
       lastStaticColor = e.target.value;
       document.body.style.backgroundColor = lastStaticColor;
+    });
+
+    togglePanelBtn.addEventListener('click', () => {
+      const hidden = panel.style.display === 'none';
+      panel.style.display = hidden ? 'flex' : 'none';
+      togglePanelBtn.textContent = hidden ? 'Скрыть' : 'Показать';
     });
 
     resetBtn.addEventListener('click', () => {
@@ -160,13 +170,13 @@
         }
 
         if (mode === 'ocean') {
-          let hue = 190;
+          let hue = 185; // лазурный
           let dir = 1;
           interval = setInterval(() => {
-            hue += dir * 0.3;
-            if (hue > 210 || hue < 185) dir *= -1;
-            document.body.style.backgroundColor = `hsl(${hue}, 80%, 45%)`;
-          }, 60);
+            hue += dir * 0.6;
+            if (hue > 220 || hue < 185) dir *= -1; // до глубокого синего
+            document.body.style.backgroundColor = `hsl(${hue}, 90%, 45%)`;
+          }, 50);
         }
 
         if (mode === 'beacon') {
