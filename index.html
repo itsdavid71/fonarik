@@ -104,6 +104,10 @@
     <button class="btn" data-mode="candle">Свеча</button>
     <button class="btn" data-mode="ocean">Океан</button>
     <button class="btn" data-mode="beacon">Мигалка</button>
+    <button class="btn" data-mode="pulse">Пульс</button>
+    <button class="btn" data-mode="rainbow">Радуга</button>
+    <button class="btn" data-mode="sos">SOS</button>
+    <button class="btn" data-mode="fire">Костёр</button>
   </div>
 
   <script>
@@ -176,6 +180,59 @@
             document.body.style.backgroundColor = sequence[step];
             step = (step + 1) % sequence.length;
           }, 150);
+        }
+
+        if (mode === 'pulse') {
+          let t = 0;
+          interval = setInterval(() => {
+            const light = 40 + Math.sin(t) * 20;
+            document.body.style.backgroundColor = `hsl(0, 0%, ${light}%)`;
+            t += 0.15;
+          }, 50);
+        }
+
+        if (mode === 'rainbow') {
+          let hue = 0;
+          interval = setInterval(() => {
+            document.body.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            hue = (hue + 1) % 360;
+          }, 30);
+        }
+
+        if (mode === 'sos') {
+          const dot = 200;
+          const dash = 600;
+          const pause = 200;
+          const sequence = [
+            ['#fff', dot], ['#000', pause],
+            ['#fff', dot], ['#000', pause],
+            ['#fff', dot], ['#000', pause * 3],
+            ['#fff', dash], ['#000', pause],
+            ['#fff', dash], ['#000', pause],
+            ['#fff', dash], ['#000', pause * 3],
+            ['#fff', dot], ['#000', pause],
+            ['#fff', dot], ['#000', pause],
+            ['#fff', dot], ['#000', pause * 6]
+          ];
+
+          let i = 0;
+          function runSOS() {
+            document.body.style.backgroundColor = sequence[i][0];
+            setTimeout(() => {
+              i = (i + 1) % sequence.length;
+              if (interval) runSOS();
+            }, sequence[i][1]);
+          }
+          interval = true;
+          runSOS();
+        }
+
+        if (mode === 'fire') {
+          interval = setInterval(() => {
+            const hue = 20 + Math.random() * 20;
+            const light = 35 + Math.random() * 20;
+            document.body.style.backgroundColor = `hsl(${hue}, 100%, ${light}%)`;
+          }, 100);
         }
       });
     });
